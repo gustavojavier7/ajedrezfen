@@ -1,0 +1,615 @@
+/* ===================== RESET Y BASE ===================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    line-height: 1.5;
+    color: #374151;
+    overflow-x: auto;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px;
+    min-height: 100vh;
+}
+
+/* ===================== ENCABEZADO ===================== */
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.header h1 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* ===================== CARGA DE MOTORES ===================== */
+.engine-upload-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.engines-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.engine-box {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: rgba(249, 250, 251, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.engine-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.engine-box:hover::before {
+    left: 100%;
+}
+
+.engine-box.loaded {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.engine-box h3 {
+    margin-bottom: 12px;
+    color: #374151;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-btn {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.engine-info {
+    margin-top: 10px;
+    font-size: 0.875rem;
+    color: #6b7280;
+    position: relative;
+    z-index: 1;
+    font-weight: 500;
+}
+
+/* ===================== CONTROLES DE PARTIDA ===================== */
+.game-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.3s ease;
+}
+
+.btn:hover:not(:disabled)::before {
+    left: 100%;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #10b981, #047857);
+    color: white;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.btn-success:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.btn-danger:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+.btn-warning:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* ===================== LAYOUT PRINCIPAL ===================== */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.board-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#chessboard {
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+}
+
+.game-status {
+    font-size: 1.125rem;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 300px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.status-playing {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
+    color: #047857;
+    border-color: rgba(16, 185, 129, 0.3);
+    animation: pulse-playing 2s infinite;
+}
+
+.status-finished {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2));
+    color: #dc2626;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+@keyframes pulse-playing {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* ===================== PANEL DE INFORMACIÓN ===================== */
+.info-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.evaluation-section, 
+.engines-status, 
+.move-history,
+.game-stats {
+    background: rgba(249, 250, 251, 0.5);
+    padding: 16px;
+    border-radius: 8px;
+    border-left: 4px solid #8b5cf6;
+    transition: all 0.3s ease;
+}
+
+.evaluation-section:hover,
+.engines-status:hover,
+.move-history:hover,
+.game-stats:hover {
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.1);
+}
+
+.section-title {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.evaluation-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
+}
+
+.eval-positive {
+    color: #047857;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.eval-negative {
+    color: #dc2626;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.eval-neutral {
+    color: #6b7280;
+    background: rgba(107, 114, 128, 0.1);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+}
+
+.evaluation-details {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.engine-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    margin: 4px 0;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+.engine-status:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateX(4px);
+}
+
+.engine-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.engine-thinking {
+    color: #f59e0b;
+    font-size: 0.875rem;
+    font-weight: 600;
+    animation: thinking-pulse 1.5s infinite;
+}
+
+.engine-ready {
+    color: #10b981;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+@keyframes thinking-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.move-list {
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    scrollbar-width: thin;
+    scrollbar-color: #8b5cf6 #f3f4f6;
+}
+
+.move-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.move-list::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 3px;
+}
+
+.move-list::-webkit-scrollbar-thumb {
+    background: #8b5cf6;
+    border-radius: 3px;
+}
+
+.move-pair {
+    margin: 4px 0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.move-pair:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-left-color: #8b5cf6;
+    transform: translateX(2px);
+}
+
+/* ===================== ESTADÍSTICAS ===================== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.stat-item:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateX(2px);
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #374151;
+    font-family: 'Courier New', monospace;
+}
+
+/* ===================== SECCIÓN DE AYUDA ===================== */
+.help-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.help-section details {
+    cursor: pointer;
+}
+
+.help-section summary {
+    font-weight: 600;
+    color: #374151;
+    padding: 10px 0;
+    outline: none;
+    transition: color 0.3s ease;
+}
+
+.help-section summary:hover {
+    color: #8b5cf6;
+}
+
+.help-content {
+    padding: 16px 0;
+    border-top: 1px solid rgba(229, 231, 235, 0.8);
+    margin-top: 10px;
+}
+
+.help-content h4 {
+    margin-bottom: 12px;
+    color: #374151;
+}
+
+.help-content pre {
+    background: rgba(17, 24, 39, 0.95);
+    color: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    overflow-x: auto;
+    margin: 12px 0;
+    border: 1px solid rgba(75, 85, 99, 0.3);
+}
+
+.help-content code {
+    background: rgba(17, 24, 39, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+}
+
+.help-content ul {
+    margin: 12px 0;
+    padding-left: 20px;
+}
+
+.help-content li {
+    margin: 6px 0;
+    color: #6b7280;
+}
+
+/* ===================== TABLERO SVG ===================== */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+}
+
+.loading h3 {
+    margin-bottom: 12px;
+    color: #374151;
+}
+
+.loading p {
+    font-size: 0.875rem;
+}
+
+.loading code {
+    background: rgba(139, 92, 246, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #8b5cf6;
+    font-weight: 600;
+}
+
+/* ===================== RESPONSIVE DESIGN ===================== */
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .engines-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-panel {
+        max-height: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 12px;
+    }
+    
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 200px;
+        justify-content: center;
+    }
+    
+    .engine-box {
+        padding: 16px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.25rem;
+    }
+    
+    .subtitle {
+        font-size: 0.875rem;
+    }
+    
+    .engine-upload-section,
+    .info-panel,
+    .help-section {
+        padding: 16px;
+    }
+    
+    .game-status {
+        min-width: auto;
+        width: 100%;
+    }
+}

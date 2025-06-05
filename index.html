@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motor de Ajedrez Dual - Motores vs Motores</title>
+    
+    <!-- Meta tags adicionales -->
+    <meta name="description" content="Sistema de enfrentamiento entre motores de ajedrez con evaluación Stockfish">
+    <meta name="keywords" content="ajedrez, motores, stockfish, enfrentamiento, evaluación">
+    <meta name="author" content="Sistema de Ajedrez Dual">
+    
+    <!-- Optimización de carga -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Dependencias externas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.min.js" onerror="alert('Error al cargar chess.js. Por favor, verifica tu conexión o intenta de nuevo.')"></script>
+    
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♛</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <!-- ENCABEZADO -->
+        <div class="header">
+            <h1>🏆 Motor de Ajedrez Dual</h1>
+            <p class="subtitle">Enfrentamiento entre motores con evaluación Stockfish</p>
+        </div>
+
+        <!-- SECCIÓN DE CARGA DE MOTORES -->
+        <div class="engine-upload-section">
+            <div class="engines-grid">
+                <!-- Motor Blancas -->
+                <div class="engine-box" id="engineBoxWhite">
+                    <h3>⚪ Motor Blancas</h3>
+                    <input type="file" id="engineFileWhite" class="file-input" accept=".js,.txt">
+                    <button onclick="document.getElementById('engineFileWhite').click()" class="upload-btn">
+                        📁 Cargar Motor
+                    </button>
+                    <div class="engine-info" id="engineInfoWhite">
+                        No hay motor cargado
+                    </div>
+                </div>
+
+                <!-- Motor Negras -->
+                <div class="engine-box" id="engineBoxBlack">
+                    <h3>⚫ Motor Negras</h3>
+                    <input type="file" id="engineFileBlack" class="file-input" accept=".js,.txt">
+                    <button onclick="document.getElementById('engineFileBlack').click()" class="upload-btn">
+                        📁 Cargar Motor
+                    </button>
+                    <div class="engine-info" id="engineInfoBlack">
+                        No hay motor cargado
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTROLES DE PARTIDA -->
+            <div class="game-controls">
+                <button id="startGameBtn" class="btn btn-success" onclick="startGame()" disabled>
+                    ▶️ Iniciar Partida
+                </button>
+                <button id="pauseGameBtn" class="btn btn-warning" onclick="pauseGame()" disabled>
+                    ⏸️ Pausar
+                </button>
+                <button id="stopGameBtn" class="btn btn-danger" onclick="stopGame()" disabled>
+                    ⏹️ Detener
+                </button>
+                <button class="btn btn-warning" onclick="resetGame()">
+                    🔄 Reiniciar
+                </button>
+            </div>
+        </div>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="main-content">
+            <!-- TABLERO -->
+            <div class="board-section">
+                <div id="chessboard">
+                    <div class="loading">
+                        <h3>Carga ambos motores para comenzar</h3>
+                        <p>Los motores deben implementar la función <code>getMove(fen)</code></p>
+                    </div>
+                </div>
+                <div id="gameStatus" class="game-status">
+                    Esperando motores...
+                </div>
+            </div>
+
+            <!-- PANEL DE INFORMACIÓN -->
+            <div class="info-panel">
+                <!-- EVALUACIÓN -->
+                <div class="evaluation-section">
+                    <div class="section-title">
+                        ⚖️ Evaluación Stockfish
+                    </div>
+                    <div id="evaluationValue" class="evaluation-value eval-neutral">
+                        --
+                    </div>
+                    <div id="evaluationDetails" class="evaluation-details">
+                        Motor no conectado
+                    </div>
+                </div>
+
+                <!-- ESTADO DE MOTORES -->
+                <div class="engines-status">
+                    <div class="section-title">
+                        🔧 Estado de Motores
+                    </div>
+                    <div class="engine-status">
+                        <span class="engine-name">Motor Blancas:</span>
+                        <span id="whiteEngineStatus" class="engine-ready">No cargado</span>
+                    </div>
+                    <div class="engine-status">
+                        <span class="engine-name">Motor Negras:</span>
+                        <span id="blackEngineStatus" class="engine-ready">No cargado</span>
+                    </div>
+                    <div class="engine-status">
+                        <span class="engine-name">Stockfish:</span>
+                        <span id="stockfishStatus" class="engine-ready">Desconectado</span>
+                    </div>
+                </div>
+
+                <!-- HISTORIAL DE MOVIMIENTOS -->
+                <div class="move-history">
+                    <div class="section-title">
+                        📋 Historial de Movimientos
+                    </div>
+                    <div id="moveHistory" class="move-list">
+                        La partida no ha comenzado
+                    </div>
+                </div>
+
+                <!-- ESTADÍSTICAS DE PARTIDA -->
+                <div class="game-stats">
+                    <div class="section-title">
+                        📊 Estadísticas
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Movimientos:</span>
+                            <span id="moveCount" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Tiempo transcurrido:</span>
+                            <span id="gameTime" class="stat-value">00:00</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Última evaluación:</span>
+                            <span id="lastEval" class="stat-value">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE INFORMACIÓN Y AYUDA -->
+        <div class="help-section">
+            <details>
+                <summary>📖 Formato de Motor Requerido</summary>
+                <div class="help-content">
+                    <h4>Tu motor debe implementar esta función:</h4>
+                    <pre><code>function getMove(fen, chess) {
+    // Tu lógica de ajedrez aquí
+    const moves = chess.moves();
+    
+    // Ejemplo: movimiento aleatorio
+    const randomIndex = Math.floor(Math.random() * moves.length);
+    return moves[randomIndex];
+}</code></pre>
+                    <p><strong>Parámetros:</strong></p>
+                    <ul>
+                        <li><code>fen</code>: Posición actual en notación FEN</li>
+                        <li><code>chess</code>: Instancia de Chess.js para análisis</li>
+                    </ul>
+                    <p><strong>Retorno:</strong> Movimiento en notación SAN (ej: "e4", "Nf3", "O-O")</p>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
