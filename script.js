@@ -708,7 +708,7 @@
     function downloadSampleEngine(type) {
         let content = '';
         let filename = '';
-        
+
         if (type === 'random') {
             content = `// Motor Aleatorio Simple para Sistema de Enfrentamiento
 // Implementa la función getMove(fen, chess) requerida
@@ -716,10 +716,85 @@
 function getMove(fen, chess) {
     const moves = chess.moves();
     if (moves.length === 0) return null;
-    
+
     // Seleccionar movimiento aleatorio
     const randomIndex = Math.floor(Math.random() * moves.length);
     return moves[randomIndex];
+}
+
+// El motor debe retornar un movimiento en notación SAN (e.g., "e4", "Nf3", "O-O")`;
+            filename = 'motor_aleatorio.js';
+        } else if (type === 'basic') {
+            content = `// Motor Básico con Heurísticas para Sistema de Enfrentamiento
+// Implementa la función getMove(fen, chess) requerida
+
+function getMove(fen, chess) {
+    const moves = chess.moves({ verbose: true });
+    if (moves.length === 0) return null;
+
+    // Valores de las piezas
+    const pieceValues = {
+        'p': 1, 'n': 3, 'b': 3, 'r': 5, 'q': 9, 'k': 0
+    };
+
+    let bestMove = null;
+    let bestScore = -Infinity;
+
+    for (let move of moves) {
+        let score = 0;
+
+        // Capturar piezas es bueno
+        if (move.captured) {
+            score += pieceValues[move.captured] * 10;
+        }
+
+        // Verificar jaque mate
+        chess.move(move);
+        if (chess.in_checkmate()) {
+            chess.undo();
+            return move.san; // ¡Jaque mate es lo mejor!
+        }
+
+        // Jaque es bueno
+        if (chess.in_check()) {
+            score += 5;
+        }
+        chess.undo();
+
+        // Control del centro es importante
+        const centerSquares = ['d4', 'd5', 'e4', 'e5'];
+        if (centerSquares.includes(move.to)) {
+            score += 2;
+        }
+
+        // Desarrollo en la apertura (primeros 10 movimientos)
+        if (chess.history().length < 10) {
+            if (['n', 'b'].includes(move.piece) &&
+                !['a', 'h'].includes(move.to[0])) {
+                score += 1;
+            }
+        }
+
+        // Proteger el rey
+        if (move.piece === 'k' && chess.history().length < 15) {
+            // Enroque es bueno en la apertura
+            if (move.san.includes('O')) {
+                score += 3;
+            } else {
+                score -= 1; // Mover el rey temprano es malo
+            }
+        }
+
+        // Añadir algo de aleatoriedad para variedad
+        score += Math.random() * 0.5;
+
+        if (score > bestScore) {
+            bestScore = score;
+            bestMove = move.san;
+        }
+    }
+
+    return bestMove || moves[0].san;
 }
 
 // El motor debe retornar un movimiento en notación SAN (e.g., "e4", "Nf3", "O-O")`;
@@ -1046,80 +1121,4 @@ function getMove(fen, chess) {
     console.log('  - chessEngineSystem.getPerformanceStats() - Estadísticas de rendimiento');
     console.log('  - chessEngineSystem.fullReset() - Reinicio completo del sistema');
 
-})(); notación SAN (e.g., "e4", "Nf3", "O-O")`;
-            filename = 'motor_aleatorio.js';
-            
-        } else if (type === 'basic') {
-            content = `// Motor Básico con Heurísticas para Sistema de Enfrentamiento
-// Implementa la función getMove(fen, chess) requerida
-
-function getMove(fen, chess) {
-    const moves = chess.moves({ verbose: true });
-    if (moves.length === 0) return null;
-    
-    // Valores de las piezas
-    const pieceValues = {
-        'p': 1, 'n': 3, 'b': 3, 'r': 5, 'q': 9, 'k': 0
-    };
-    
-    let bestMove = null;
-    let bestScore = -Infinity;
-    
-    for (let move of moves) {
-        let score = 0;
-        
-        // Capturar piezas es bueno
-        if (move.captured) {
-            score += pieceValues[move.captured] * 10;
-        }
-        
-        // Verificar jaque mate
-        chess.move(move);
-        if (chess.in_checkmate()) {
-            chess.undo();
-            return move.san; // ¡Jaque mate es lo mejor!
-        }
-        
-        // Jaque es bueno
-        if (chess.in_check()) {
-            score += 5;
-        }
-        chess.undo();
-        
-        // Control del centro es importante
-        const centerSquares = ['d4', 'd5', 'e4', 'e5'];
-        if (centerSquares.includes(move.to)) {
-            score += 2;
-        }
-        
-        // Desarrollo en la apertura (primeros 10 movimientos)
-        if (chess.history().length < 10) {
-            if (['n', 'b'].includes(move.piece) && 
-                !['a', 'h'].includes(move.to[0])) {
-                score += 1;
-            }
-        }
-        
-        // Proteger el rey
-        if (move.piece === 'k' && chess.history().length < 15) {
-            // Enroque es bueno en la apertura
-            if (move.san.includes('O')) {
-                score += 3;
-            } else {
-                score -= 1; // Mover el rey temprano es malo
-            }
-        }
-        
-        // Añadir algo de aleatoriedad para variedad
-        score += Math.random() * 0.5;
-        
-        if (score > bestScore) {
-            bestScore = score;
-            bestMove = move.san;
-        }
-    }
-    
-    return bestMove || moves[0].san;
-}
-
-// El motor debe retornar un movimiento en
+})();
